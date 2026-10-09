@@ -1,0 +1,46 @@
+<%- include('../partials/header') %>
+<header class="cabecera">
+  <a class="volver" href="/productos">Productos</a>
+  <h1><%= producto.id ? 'Editar producto' : 'Nuevo producto' %></h1>
+</header>
+
+<div class="panel-form">
+  <% if (error) { %><div class="alerta error"><%= error %></div><% } %>
+
+  <form action="<%= accion %>" method="POST">
+    <label for="nombre">Nombre</label>
+    <input id="nombre" type="text" name="nombre" value="<%= producto.nombre || '' %>" required>
+
+    <label for="descripcion">Descripción</label>
+    <input id="descripcion" type="text" name="descripcion" value="<%= producto.descripcion || '' %>">
+
+    <div class="dos-columnas">
+      <div>
+        <label for="precio">Precio (S/)</label>
+        <input id="precio" type="number" name="precio" step="0.01" min="0" value="<%= producto.precio || '' %>" required>
+      </div>
+      <div>
+        <label for="stock">Stock</label>
+        <input id="stock" type="number" name="stock" min="0" value="<%= producto.stock !== undefined ? producto.stock : '' %>" required>
+      </div>
+    </div>
+
+    <label for="tienda_id">Tienda</label>
+    <% if (user.rol === 'ADMIN') { %>
+      <select id="tienda_id" name="tienda_id" required>
+        <% tiendas.forEach(t => { %>
+          <option value="<%= t.id %>" <%= String(producto.tienda_id) === String(t.id) ? 'selected' : '' %>><%= t.nombre %></option>
+        <% }) %>
+      </select>
+    <% } else { %>
+      <input id="tienda_id" type="text" value="<%= user.tienda %>" disabled>
+      <p class="ayuda">Como gerente solo gestionas productos de tu tienda.</p>
+    <% } %>
+
+    <div class="form-botones">
+      <button class="btn btn-principal" type="submit"><%= producto.id ? 'Guardar cambios' : 'Crear producto' %></button>
+      <a class="btn btn-borde" href="/productos">Cancelar</a>
+    </div>
+  </form>
+</div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,27 @@
+# Dependencias
+node_modules/
+
+# Claves y configuración privada
+.env
+.env.*
+client_secret*.json
+*.pem
+*.key
+
+# Archivos del sistema y editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Permitir el ejemplo de variables
+!.env.example
+
+# Videos y capturas
+*.mp4
+*.mov
+*.png
+*.jpg

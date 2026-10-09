@@ -1,0 +1,23 @@
+<%- include('partials/header') %>
+<div class="acceso">
+  <%- include('partials/panel-marca') %>
+
+  <section class="acceso-form">
+    <div class="form-caja">
+      <p class="paso-mfa">Paso 2 de 2</p>
+      <h1>Verificación en dos pasos</h1>
+      <p class="sub">Escribe el código de Google Authenticator para <b><%= email %></b>.</p>
+
+      <% if (error) { %><div class="alerta error"><%= error %></div><% } %>
+
+      <form action="/mfa/verificar" method="POST">
+        <label for="codigo">Código de 6 dígitos</label>
+        <input id="codigo" class="codigo" type="text" name="codigo" maxlength="6" inputmode="numeric" pattern="\d{6}" autocomplete="one-time-code" placeholder="000000" required autofocus>
+        <button class="btn btn-principal btn-ancho" type="submit">Verificar y entrar</button>
+      </form>
+      <p class="ayuda centro">El código cambia cada 30 segundos. Tienes 3 intentos.</p>
+      <p class="pie"><a href="/logout">Usar otra cuenta</a></p>
+    </div>
+  </section>
+</div>
+<%- include('partials/footer') %>

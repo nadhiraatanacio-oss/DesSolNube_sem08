@@ -1,0 +1,31 @@
+<%- include('partials/header') %>
+<div class="acceso">
+  <%- include('partials/panel-marca') %>
+
+  <section class="acceso-form">
+    <div class="form-caja">
+      <p class="paso-mfa">Paso 2 de 2</p>
+      <h1>Activa la verificación en dos pasos</h1>
+      <p class="sub">Solo se hace la primera vez que inicias sesión.</p>
+
+      <% if (error) { %><div class="alerta error"><%= error %></div><% } %>
+
+      <div class="qr-bloque">
+        <img class="qr" src="<%= qr %>" alt="Código QR para Google Authenticator">
+        <ol class="pasos">
+          <li>Abre Google Authenticator en tu celular.</li>
+          <li>Toca <b>+</b> y elige <b>Escanear un código QR</b>.</li>
+          <li>Escribe abajo el código de 6 dígitos que aparece.</li>
+        </ol>
+      </div>
+      <p class="secreto">Si no puedes escanear, ingresa esta clave: <code><%= secret %></code></p>
+
+      <form action="/mfa/verificar" method="POST">
+        <label for="codigo">Código de 6 dígitos</label>
+        <input id="codigo" class="codigo" type="text" name="codigo" maxlength="6" inputmode="numeric" pattern="\d{6}" autocomplete="one-time-code" placeholder="000000" required autofocus>
+        <button class="btn btn-principal btn-ancho" type="submit">Activar y entrar</button>
+      </form>
+    </div>
+  </section>
+</div>
+<%- include('partials/footer') %>

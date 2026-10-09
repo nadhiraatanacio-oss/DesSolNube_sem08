@@ -1,0 +1,23 @@
+<%- include('partials/header') %>
+<header class="cabecera">
+  <h1>Auditoría</h1>
+  <p class="sub">Últimos 100 eventos de seguridad. Los eventos en rojo son intentos fallidos, bloqueos o accesos denegados.</p>
+</header>
+
+<div class="tabla-envoltura">
+<table>
+  <thead><tr><th>Fecha</th><th>Usuario</th><th>Evento</th><th>Detalle</th><th>IP</th></tr></thead>
+  <tbody>
+  <% eventos.forEach(e => { %>
+    <tr>
+      <td class="fecha"><%= new Date(e.fecha).toLocaleString('es-PE') %></td>
+      <td><%= e.email || '-' %></td>
+      <td><span class="evento <%= /FALLIDO|BLOQUE|DENEGADO/.test(e.accion) ? 'evento-riesgo' : '' %>"><%= e.accion.replace(/_/g, ' ').toLowerCase() %></span></td>
+      <td><%= e.detalle %></td>
+      <td class="fecha"><%= e.ip %></td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+</div>
+<%- include('partials/footer') %>

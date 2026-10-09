@@ -1,0 +1,73 @@
+<%- include('../partials/header') %>
+<div class="titulo-fila">
+  <h1>Productos</h1>
+  <% if (['ADMIN','GERENTE'].includes(user.rol)) { %>
+    <a class="btn" href="/productos/nuevo">+ Nuevo producto</a>
+  <% } %>
+</div>
+
+<% if (ok) { %><div class="alerta ok"><%= ok %></div><% } %>
+
+<form class="filtro" method="GET" action="/productos">
+  <select name="tienda" onchange="this.form.submit()">
+    <option value="">Todas las tiendas</option>
+    <% tiendas.forEach(t => { %>
+      <option value="<%= t.id %>" <%= String(tiendaFiltro) === String(t.id) ? 'selected' : '' %>><%= t.nombre %></option>
+    <% }) %>
+  </select>
+  <span class="en-vivo">● Stock en tiempo real</span>
+</form>
+
+<table>
+  <thead>
+    <tr><th>ID</th><th>Producto</th><th>Tienda</th><th>Precio (S/)</th><th>Stock</th><th>Acciones</th></tr>
+  </thead>
+  <tbody>
+  <% productos.forEach(p => { %>
+    <tr>
+      <td><%= p.id %></td>
+      <td><b><%= p.nombre %></b><br><small><%= p.descripcion %></small></td>
+      <td><%= p.tienda %></td>
+      <td><%= Number(p.precio).toFixed(2) %></td>
+      <td class="stock <%= p.stock < 5 ? 'bajo' : '' %>" data-id="<%= p.id %>"><%= p.stock %></td>
+      <td class="acciones">
+        <% if (puedeStock(p)) { %>
+          <form action="/productos/<%= p.id %>/stock" method="POST" class="en-linea">
+            <input type="number" name="stock" min="0" value="<%= p.stock %>" required>
+            <button class="btn btn-sm" type="submit">Stock</button>
+          </form>
+        <% } %>
+        <% if (puedeEditar(p)) { %>
+          <a class="btn btn-sm btn-gris" href="/productos/<%= p.id %>/editar">Editar</a>
+          <form action="/productos/<%= p.id %>/eliminar" method="POST" class="en-linea"
+                onsubmit="return confirm('¿Eliminar este producto?')">
+            <button class="btn btn-sm btn-rojo" type="submit">Eliminar</button>
+          </form>
+        <% } %>
+        <% if (!puedeStock(p) && !puedeEditar(p)) { %><small>Solo lectura</small><% } %>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+
+<script>
+  // Actualiza la columna de stock cada 5 segundos sin recargar la página
+  setInterval(async () => {
+    try {
+      const resp = await fetch('/productos/api/stock');
+      if (!resp.ok) return;
+      const datos = await resp.json();
+      datos.forEach(d => {
+        const celda = document.querySelector('td.stock[data-id="' + d.id + '"]');
+        if (celda && celda.textContent.trim() !== String(d.stock)) {
+          celda.textContent = d.stock;
+          celda.classList.toggle('bajo', d.stock < 5);
+          celda.classList.add('cambio');
+          setTimeout(() => celda.classList.remove('cambio'), 1500);
+        }
+      });
+    } catch (e) {}
+  }, 5000);
+</script>
+<%- include('../partials/footer') %>

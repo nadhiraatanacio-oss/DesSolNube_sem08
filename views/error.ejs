@@ -1,0 +1,8 @@
+<%- include('partials/header') %>
+<div class="error-pagina">
+  <span class="error-codigo"><%= titulo.match(/\d{3}/) ? titulo.match(/\d{3}/)[0] : '!' %></span>
+  <h1><%= titulo.replace(/\s*\(\d{3}\)/, '') %></h1>
+  <p class="sub"><%= mensaje %></p>
+  <a class="btn btn-principal" href="/dashboard">Volver al inicio</a>
+</div>
+<%- include('partials/footer') %>

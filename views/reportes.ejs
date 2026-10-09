@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+<header class="cabecera cabecera-fila">
+  <div>
+    <h1>Reporte de inventario</h1>
+    <p class="sub"><%= soloSuTienda ? 'Tu tienda.' : 'Todas las tiendas.' %> Generado el <%= new Date().toLocaleString('es-PE') %>.</p>
+  </div>
+  <button class="btn btn-borde no-imprimir" onclick="window.print()">Imprimir reporte</button>
+</header>
+
+<div class="tabla-envoltura">
+<table>
+  <thead><tr><th>Tienda</th><th class="num">Productos</th><th class="num">Unidades</th><th class="num">Valor del inventario</th></tr></thead>
+  <tbody>
+  <% resumen.forEach(r => { %>
+    <tr>
+      <td><span class="prod-nombre"><%= r.tienda %></span></td>
+      <td class="num"><%= r.productos %></td>
+      <td class="num"><%= r.unidades %></td>
+      <td class="num">S/ <%= Number(r.valor).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+</div>
+
+<h2 class="titulo-seccion">Stock bajo</h2>
+<p class="sub">Productos con menos de 5 unidades. Conviene reponerlos.</p>
+<div class="tabla-envoltura">
+<table>
+  <thead><tr><th>Producto</th><th>Tienda</th><th>Stock</th></tr></thead>
+  <tbody>
+  <% if (stockBajo.length === 0) { %>
+    <tr><td colspan="3" class="vacio">Ningún producto tiene stock bajo.</td></tr>
+  <% } %>
+  <% stockBajo.forEach(p => { %>
+    <tr>
+      <td><span class="prod-nombre"><%= p.nombre %></span></td>
+      <td><%= p.tienda %></td>
+      <td><span class="estado estado-bajo"><%= p.stock %> unidades</span></td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+</div>
+<%- include('partials/footer') %>

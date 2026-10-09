@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechStore | Inventario</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="app <%= user ? '' : 'app-publica' %>">
+<% if (user) { %>
+  <aside class="lateral">
+    <a class="marca" href="/dashboard">
+      <span class="marca-barras" aria-hidden="true"></span>
+      <span class="marca-texto">TechStore</span>
+    </a>
+
+    <nav class="menu">
+      <a href="/dashboard" class="<%= ruta.startsWith('/dashboard') ? 'activo' : '' %>">
+        <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+        Inicio
+      </a>
+      <a href="/productos" class="<%= ruta.startsWith('/productos') ? 'activo' : '' %>">
+        <svg viewBox="0 0 24 24"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></svg>
+        Productos
+      </a>
+      <% if (['ADMIN','AUDITOR','GERENTE'].includes(user.rol)) { %>
+      <a href="/reportes" class="<%= ruta === '/reportes' ? 'activo' : '' %>">
+        <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+        Reportes
+      </a>
+      <% } %>
+      <% if (['ADMIN','AUDITOR'].includes(user.rol)) { %>
+      <a href="/reportes/auditoria" class="<%= ruta.startsWith('/reportes/auditoria') ? 'activo' : '' %>">
+        <svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8.2 8 9 4.6-.8 8-4.5 8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>
+        Auditoría
+      </a>
+      <% } %>
+      <% if (user.rol === 'ADMIN') { %>
+      <a href="/usuarios" class="<%= ruta.startsWith('/usuarios') ? 'activo' : '' %>">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.8a3.5 3.5 0 0 1 0 6.4M18.5 14.8c1.6.8 2.6 2.6 3 5.2"/></svg>
+        Usuarios
+      </a>
+      <% } %>
+    </nav>
+
+    <div class="perfil">
+      <span class="perfil-nombre"><%= user.nombre %></span>
+      <span class="perfil-tienda"><%= user.tienda %></span>
+      <span class="rol rol-<%= user.rol.toLowerCase() %>"><%= user.rol %></span>
+      <a class="salir" href="/logout">
+        <svg viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 16l-4-4 4-4M6 12h10"/></svg>
+        Cerrar sesión
+      </a>
+    </div>
+  </aside>
+<% } %>
+<main class="contenido">

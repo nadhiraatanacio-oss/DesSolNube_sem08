@@ -1,0 +1,62 @@
+<%- include('partials/header') %>
+<header class="cabecera">
+  <h1>Usuarios</h1>
+  <p class="sub">Los cambios de rol se aplican la próxima vez que el usuario inicie sesión.</p>
+</header>
+
+<% if (ok) { %><div class="alerta ok"><%= ok %></div><% } %>
+
+<div class="tabla-envoltura">
+<table>
+  <thead>
+    <tr><th>Usuario</th><th>Acceso</th><th>Estado</th><th>Rol y tienda</th><th>Seguridad</th></tr>
+  </thead>
+  <tbody>
+  <% usuarios.forEach(u => { %>
+    <tr>
+      <td>
+        <span class="prod-nombre"><%= u.nombre %></span>
+        <span class="prod-detalle"><%= u.email %></span>
+      </td>
+      <td>
+        <span class="acceso-tipo"><%= u.proveedor === 'local' ? 'Email' : u.proveedor === 'google' ? 'Google' : 'GitHub' %></span>
+        <span class="prod-detalle"><%= u.mfa_activo ? 'MFA activo' : 'MFA pendiente' %></span>
+      </td>
+      <td>
+        <% if (u.bloqueado) { %><span class="estado estado-bloqueado">Bloqueado</span>
+        <% } else { %><span class="estado estado-activo">Activo</span><% } %>
+      </td>
+      <td>
+        <form action="/usuarios/<%= u.id %>/rol" method="POST" class="en-linea">
+          <select name="rol_id" aria-label="Rol">
+            <% roles.forEach(r => { %>
+              <option value="<%= r.id %>" <%= r.id === u.rol_id ? 'selected' : '' %>><%= r.nombre %></option>
+            <% }) %>
+          </select>
+          <select name="tienda_id" aria-label="Tienda">
+            <% tiendas.forEach(t => { %>
+              <option value="<%= t.id %>" <%= t.id === u.tienda_id ? 'selected' : '' %>><%= t.nombre.replace('TechStore ', '') %></option>
+            <% }) %>
+          </select>
+          <button class="btn btn-chico btn-suave" type="submit">Guardar</button>
+        </form>
+      </td>
+      <td>
+        <div class="acciones">
+        <% if (u.bloqueado) { %>
+          <form action="/usuarios/<%= u.id %>/desbloquear" method="POST" class="en-linea">
+            <button class="btn btn-chico btn-borde" type="submit">Desbloquear</button>
+          </form>
+        <% } %>
+        <form action="/usuarios/<%= u.id %>/reset-mfa" method="POST" class="en-linea"
+              onsubmit="return confirm('¿Reiniciar MFA? El usuario tendrá que escanear un QR nuevo.')">
+          <button class="btn btn-chico btn-peligro" type="submit">Reiniciar MFA</button>
+        </form>
+        </div>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+</div>
+<%- include('partials/footer') %>

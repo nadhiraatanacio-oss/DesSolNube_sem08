@@ -1,0 +1,59 @@
+<%- include('partials/header') %>
+<header class="cabecera">
+  <h1>Hola, <%= user.nombre.split(' ')[0] %></h1>
+  <p class="sub">
+    <%= global ? 'Resumen de las 3 tiendas.' : 'Resumen de ' + user.tienda + '.' %>
+    Sesión verificada con contraseña y código MFA.
+  </p>
+</header>
+
+<section class="cifras">
+  <div class="cifra">
+    <span class="cifra-valor"><%= stats.productos %></span>
+    <span class="cifra-nombre">Productos registrados</span>
+  </div>
+  <div class="cifra">
+    <span class="cifra-valor"><%= Number(stats.unidades).toLocaleString('es-PE') %></span>
+    <span class="cifra-nombre">Unidades en stock</span>
+  </div>
+  <div class="cifra <%= Number(stats.bajos) > 0 ? 'cifra-alerta' : '' %>">
+    <span class="cifra-valor"><%= stats.bajos %></span>
+    <span class="cifra-nombre">Con stock bajo (menos de 5)</span>
+  </div>
+  <div class="cifra">
+    <span class="cifra-valor"><small>S/</small> <%= Number(stats.valor).toLocaleString('es-PE', { maximumFractionDigits: 0 }) %></span>
+    <span class="cifra-nombre">Valor del inventario</span>
+  </div>
+</section>
+
+<h2 class="titulo-seccion">Lo que puedes hacer</h2>
+<nav class="accesos">
+  <a href="/productos">
+    <strong>Productos</strong>
+    <span>
+      <% if (user.rol === 'ADMIN') { %>Crear, editar y eliminar productos de todas las tiendas.
+      <% } else if (user.rol === 'GERENTE') { %>Crear, editar y eliminar productos de tu tienda.
+      <% } else if (user.rol === 'EMPLEADO') { %>Consultar productos y actualizar el stock de tu tienda.
+      <% } else { %>Consultar productos de todas las tiendas, sin modificar.<% } %>
+    </span>
+  </a>
+  <% if (['ADMIN','AUDITOR','GERENTE'].includes(user.rol)) { %>
+  <a href="/reportes">
+    <strong>Reportes</strong>
+    <span><%= user.rol === 'GERENTE' ? 'Inventario y stock bajo de tu tienda.' : 'Inventario y stock bajo por tienda.' %></span>
+  </a>
+  <% } %>
+  <% if (['ADMIN','AUDITOR'].includes(user.rol)) { %>
+  <a href="/reportes/auditoria">
+    <strong>Auditoría</strong>
+    <span>Inicios de sesión, bloqueos, códigos MFA y cambios en productos.</span>
+  </a>
+  <% } %>
+  <% if (user.rol === 'ADMIN') { %>
+  <a href="/usuarios">
+    <strong>Usuarios</strong>
+    <span>Asignar roles y tiendas, desbloquear cuentas y reiniciar MFA.</span>
+  </a>
+  <% } %>
+</nav>
+<%- include('partials/footer') %>
